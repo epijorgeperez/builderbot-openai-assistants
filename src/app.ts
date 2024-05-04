@@ -1,6 +1,6 @@
 import "dotenv/config"
 
-import { createBot, createProvider, createFlow, addKeyword, EVENTS } from '@builderbot/bot'
+import { createBot, createProvider, createFlow, addKeyword, EVENTS, addAnswer } from '@builderbot/bot'
 import { MemoryDB as Database } from '@builderbot/bot'
 import { BaileysProvider as Provider } from '@builderbot/provider-baileys'
 import { toAsk, httpInject } from "@builderbot-plugins/openai-assistants"
@@ -8,6 +8,11 @@ import { typing } from "./utils/presence"
 
 const PORT = process.env?.PORT ?? 3008
 const ASSISTANT_ID = process.env?.ASSISTANT_ID ?? ''
+
+const flowWelcome = addKeyword("hola")
+    .addAnswer("Buenas", {
+        delay: 5000,
+    })
 
 const welcomeFlow = addKeyword<Provider, Database>(EVENTS.WELCOME)
     .addAction(async (ctx, { flowDynamic, state, provider }) => {
