@@ -9,12 +9,14 @@ import { typing } from "./utils/presence"
 const PORT = process.env?.PORT ?? 3008
 const ASSISTANT_ID = process.env?.ASSISTANT_ID ?? ''
 
-const flowWelcome = addKeyword("hola")
-    .addAnswer("Buenas", {
-        delay: 5000,
-    })
+const mainFlow = addKeyword('hello')
+  .addAnswer('This message will after 2 seconds',
+    { delay: 5000 }
+  )
 
 const welcomeFlow = addKeyword<Provider, Database>(EVENTS.WELCOME)
+    .addAnswer('',
+        { delay: 5000 })
     .addAction(async (ctx, { flowDynamic, state, provider }) => {
         await typing(ctx, provider)
         const response = await toAsk(ASSISTANT_ID, ctx.body, state)
@@ -25,7 +27,7 @@ const welcomeFlow = addKeyword<Provider, Database>(EVENTS.WELCOME)
     })
 
 const main = async () => {
-    const adapterFlow = createFlow([welcomeFlow])
+    const adapterFlow = createFlow([mainFlow, welcomeFlow])
     const adapterProvider = createProvider(Provider)
     const adapterDB = new Database()
 
